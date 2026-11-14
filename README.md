@@ -1,101 +1,105 @@
 <p align="center">
-  <img src="src-tauri/icons/128x128@2x.png" width="80" height="80" alt="SystemPanel 图标" />
+  <img src="src-tauri/icons/128x128@2x.png" width="80" height="80" alt="SystemPanel icon" />
 </p>
 
 <h1 align="center">SystemPanel</h1>
 
-<p align="center">菜单栏里的系统看板。CPU、内存与磁盘状态，抬眼即见。</p>
+<p align="center"><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a></p>
+
+<p align="center">A quiet system monitor for your menu bar. CPU, memory, and storage at a glance.</p>
 
 <p align="center">
-  <a href="https://github.com/EvilGenius-dot/SystemPanel/actions/workflows/build.yml"><img src="https://github.com/EvilGenius-dot/SystemPanel/actions/workflows/build.yml/badge.svg?branch=main" alt="构建与检查" /></a>
+  <a href="https://github.com/EvilGenius-dot/SystemPanel/actions/workflows/build.yml"><img src="https://github.com/EvilGenius-dot/SystemPanel/actions/workflows/build.yml/badge.svg?branch=main" alt="Build and checks" /></a>
   <img src="https://img.shields.io/badge/Tauri-2-24C8D8?logo=tauri&logoColor=white" alt="Tauri 2" />
   <img src="https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white" alt="React 19" />
-  <img src="https://img.shields.io/badge/版本-0.1.0-64748B" alt="版本 0.1.0" />
+  <img src="https://img.shields.io/badge/version-0.1.0-64748B" alt="Version 0.1.0" />
 </p>
 
 <p align="center">
-  <a href="#界面预览">界面预览</a> ·
-  <a href="#开始使用">开始使用</a> ·
-  <a href="#本地开发">本地开发</a> ·
-  <a href="#构建与分发">构建与分发</a> ·
-  <a href="#常见问题">常见问题</a>
+  <a href="#preview">Preview</a> ·
+  <a href="#getting-started">Getting started</a> ·
+  <a href="#development">Development</a> ·
+  <a href="#building-and-distribution">Building and distribution</a> ·
+  <a href="#faq">FAQ</a>
 </p>
 
-SystemPanel 是一个常驻 **macOS 菜单栏 / Windows 系统托盘** 的本地系统监控工具。点击脉冲图标即可展开紧凑面板，查看实时资源用量；收起面板后仍在后台采样。
+SystemPanel is a local system monitor that lives in the **macOS menu bar or Windows system tray**. Click its pulse icon to open a compact panel with real-time resource usage. Sampling continues in the background when the panel is hidden.
 
-无需登录，无遥测，无远程字体，系统指标只在本机处理。桌面端采用系统原生玻璃材质，提供黑色毛玻璃、银白磨砂玻璃以及跟随系统的外观。
+No account, no telemetry, and no remote fonts. System metrics stay on your device. Native glass effects give the panel a dark frosted or light silver finish, with an option to follow your system appearance.
 
-> 当前为 **v0.1.0 初始版本**。Apple Silicon Mac 已完成本地构建和界面实测；Intel Mac 与 Windows 已配置构建流程，仍需对应设备完成原生交互验证。安装包尚未配置代码签名与 Apple 公证。
+The app interface is currently in **Simplified Chinese**. Documentation is available in English and Chinese.
 
-## 界面预览
+> **v0.1.0 — initial release.** Local builds and native UI checks have been completed on Apple Silicon macOS. Build workflows are configured for Intel Mac and Windows, but native interaction still needs verification on those devices. Code signing and Apple notarization are not yet configured.
+
+## Preview
 
 <table>
   <tr>
-    <th align="center">深色 · 黑色毛玻璃</th>
-    <th align="center">浅色 · 银白磨砂玻璃</th>
+    <th align="center">Dark · Black frosted glass</th>
+    <th align="center">Light · Silver frosted glass</th>
   </tr>
   <tr>
-    <td><img src="docs/images/panel-dark.png" width="360" alt="深色系统看板：冰蓝 CPU 趋势、刻度仪表环和分段内存条" /></td>
-    <td><img src="docs/images/panel-light.png" width="360" alt="浅色系统看板：银白面板、石墨文字和蓝紫资源图表" /></td>
+    <td><img src="docs/images/panel-dark.png" width="360" alt="Dark panel with an ice-blue CPU chart, ticked gauges, and a segmented memory bar" /></td>
+    <td><img src="docs/images/panel-light.png" width="360" alt="Light silver panel with graphite text and blue and purple resource charts" /></td>
   </tr>
 </table>
 
-以上为浏览器界面预览，图中已明确标注示例数据。桌面版显示本机真实指标，背景模糊效果会随桌面背景、系统版本和透明效果设置变化。
+These are browser previews with clearly labeled sample data. The desktop app displays real metrics from your device. Native background blur varies with your wallpaper, OS version, and transparency settings.
 
-## 功能
+## Features
 
-| 模块 | 内容 |
+| Module | Details |
 | --- | --- |
-| CPU | 总使用率、处理器型号、核心数、各逻辑处理器活动、最近 2 分钟趋势 |
-| 内存 | 已用 / 总量、未使用量、已用交换空间、分段使用率条 |
-| 存储 | 按卷显示已用 / 总量与可用空间，优先展示系统卷 |
-| 设备 | 主机名、系统版本、开机运行时间 |
-| 外观 | 深色、浅色、跟随系统；原生玻璃材质与界面同步切换 |
-| 刷新 | 1 / 2 / 5 秒可选，默认 2 秒；磁盘每 15 秒刷新 |
-| 窗口 | 单实例、托盘展开 / 收起、固定面板、失焦隐藏、Esc 收起 |
+| CPU | Overall usage, processor model, core count, activity per logical processor, and a two-minute history |
+| Memory | Used and total memory, unused memory, swap usage, and a segmented usage bar |
+| Storage | Used, total, and available space per volume, with the system volume shown first |
+| Device | Hostname, OS version, and uptime |
+| Appearance | Dark, light, and system themes; native glass material follows the selected theme |
+| Refresh | 1, 2, or 5 seconds; defaults to 2 seconds. Disk space refreshes every 15 seconds |
+| Window | Single instance, tray toggle, pinning, hide on focus loss, and `Esc` to dismiss |
 
-主题与刷新频率自动保存在本地。首版不包含温度、GPU、网络速率、进程列表、开机启动或自动更新。
+Theme and refresh preferences are saved locally. This initial version does not include temperature, GPU or network monitoring, a process list, launch at login, or automatic updates.
 
-## 开始使用
+## Getting started
 
-### 获取应用
+### Get the app
 
-可以从源码构建，或在 [GitHub Actions](https://github.com/EvilGenius-dot/SystemPanel/actions/workflows/build.yml) 中选择一次成功的构建，从页面底部 **Artifacts** 下载对应平台的产物。下载 Actions 产物通常需要登录 GitHub。
+Build from source, or open a successful run in [GitHub Actions](https://github.com/EvilGenius-dot/SystemPanel/actions/workflows/build.yml) and download the artifact for your platform from the **Artifacts** section. Downloading Actions artifacts generally requires signing in to GitHub.
 
-| 平台 | 构建产物名称 | 安装文件 |
+| Platform | Artifact name | Installer |
 | --- | --- | --- |
 | Apple Silicon Mac | `SystemPanel-aarch64-apple-darwin` | `.dmg` |
 | Intel Mac | `SystemPanel-x86_64-apple-darwin` | `.dmg` |
-| Windows x64 | `SystemPanel-x86_64-pc-windows-msvc` | NSIS `.exe` 安装包 |
+| Windows x64 | `SystemPanel-x86_64-pc-windows-msvc` | NSIS `.exe` installer |
 
-macOS 打开 `.dmg` 后将应用放入「应用程序」；Windows 运行安装包。当前工作流上传构建产物，不自动创建 GitHub Release。未签名版本可能触发操作系统的安全提示，建议先从源码构建体验。
+On macOS, open the `.dmg` and move the app to Applications. On Windows, run the installer. The current workflow uploads build artifacts but does not automatically create GitHub Releases. Unsigned builds may trigger OS security prompts; building from source is recommended while trying this early version.
 
-### 面板操作
+### Use the panel
 
-| 操作 | 行为 |
+| Action | Behavior |
 | --- | --- |
-| 启动应用 | 常驻菜单栏 / 系统托盘，默认不展开面板 |
-| 左键点击图标 | 展开或收起面板 |
-| 右键点击图标 | 显示看板或退出应用 |
-| 点击图钉 | 保持面板展开，失焦后仍显示 |
-| 按 `Esc`、点击收起按钮 | 隐藏面板，后台继续采样 |
-| 点击设置 | 切换主题、调整刷新频率或退出应用 |
-| 再次启动应用 | 唤起已有实例，不重复创建托盘图标 |
+| Launch the app | Start in the menu bar or system tray with the panel hidden |
+| Left-click the tray icon | Show or hide the panel |
+| Right-click the tray icon | Show the panel or quit the app |
+| Click the pin | Keep the panel open when it loses focus |
+| Press `Esc` or click the hide button | Hide the panel while sampling continues |
+| Open settings | Change the theme or refresh interval, or quit the app |
+| Launch the app again | Show the existing instance without creating another tray icon |
 
-macOS 不显示 Dock 图标；Windows 不显示任务栏窗口，新图标可能位于托盘折叠区域。固定状态每次启动时复位，固定后仍可用 `Esc` 或托盘图标收起。
+There is no Dock icon on macOS and no taskbar window on Windows. Windows may place the tray icon in the overflow area. Pinning resets on each launch; `Esc` and the tray icon can still dismiss a pinned panel.
 
-## 本地开发
+## Development
 
-### 环境准备
+### Prerequisites
 
-- **Node.js 22.12+**：推荐使用 Node.js 22 LTS。
-- **Rust 1.92+**：本地已验证的工具链版本；仓库包含 npm 与 Cargo 锁文件。
-- **macOS**：安装 Xcode Command Line Tools；应用目标系统为 macOS 11+。
-- **Windows 10 / 11**：安装 Visual Studio C++ Build Tools 的「使用 C++ 的桌面开发」工作负载、Rust MSVC 工具链及 Microsoft Edge WebView2 Runtime。
+- **Node.js 22.12+** — Node.js 22 LTS is recommended.
+- **Rust 1.92+** — the toolchain version verified locally. Both npm and Cargo lockfiles are included.
+- **macOS** — install Xcode Command Line Tools. The app targets macOS 11 and later.
+- **Windows 10 / 11** — install Visual Studio C++ Build Tools with the **Desktop development with C++** workload, the Rust MSVC toolchain, and Microsoft Edge WebView2 Runtime.
 
-详细环境要求可参考 [Tauri 开发环境文档](https://v2.tauri.app/start/prerequisites/)。
+See the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for detailed platform setup.
 
-### 启动桌面版
+### Run the desktop app
 
 ```bash
 git clone https://github.com/EvilGenius-dot/SystemPanel.git
@@ -104,33 +108,33 @@ npm ci
 npm run desktop
 ```
 
-启动后点击菜单栏 / 托盘中的脉冲图标。需要启动时直接展开面板，可运行：
+Click the pulse icon in the menu bar or system tray after startup. To open the panel immediately when launching the development build:
 
 ```bash
 npm run desktop -- -- --show
 ```
 
-### 只调试界面
+### Preview the interface
 
 ```bash
 npm run dev
 ```
 
-打开 [http://127.0.0.1:1420](http://127.0.0.1:1420)。普通浏览器无法访问系统采集接口，因此显示带有明确标识的示例数据。桌面模式采集失败时会显示错误与上次采集结果，不会回退到示例数据。
+Open [http://127.0.0.1:1420](http://127.0.0.1:1420). A regular browser cannot access the system collection API, so it displays clearly labeled sample data. If collection fails in the desktop app, the panel shows an error and the last available readings; it never falls back to sample data.
 
-## 构建与分发
+## Building and distribution
 
-在对应平台运行：
+Run the appropriate command on the target platform:
 
 ```bash
-# macOS：生成应用与磁盘映像
+# macOS: create an app bundle and disk image
 npm run desktop:build -- --bundles app,dmg
 
-# Windows：生成 NSIS 安装包
+# Windows: create an NSIS installer
 npm run desktop:build -- --bundles nsis
 ```
 
-默认输出目录：
+Default output directory:
 
 ```text
 src-tauri/target/release/bundle/
@@ -139,13 +143,13 @@ src-tauri/target/release/bundle/
 └── nsis/*.exe
 ```
 
-各平台仅生成对应的子目录。显式传入 `--target` 时，产物位于 `src-tauri/target/<target>/release/bundle/`。
+Each platform produces only its corresponding directories. When an explicit `--target` is supplied, output goes to `src-tauri/target/<target>/release/bundle/`.
 
-[构建工作流](.github/workflows/build.yml) 在推送 `main`、推送 `v*` 标签、提交 Pull Request 或手动触发时执行，覆盖 Apple Silicon Mac、Intel Mac 和 Windows x64，并运行前端、Rust 与界面检查。
+The [build workflow](.github/workflows/build.yml) runs on pushes to `main`, `v*` tags, pull requests, and manual dispatch. It covers Apple Silicon Mac, Intel Mac, and Windows x64, alongside frontend, Rust, and UI checks.
 
-正式分发前需要配置自己的应用标识、代码签名与公证。当前标识为 `dev.systempanel.desktop`；macOS 透明 WebView 使用 Tauri 的 `macos-private-api`，按独立桌面应用分发设计，不作为 Mac App Store 构建。
+Before public distribution, configure your own application identifier, code signing, and notarization. The current identifier is `dev.systempanel.desktop`. The transparent macOS WebView uses Tauri's `macos-private-api` feature; this configuration is intended for direct desktop distribution, not a Mac App Store build.
 
-## 检查与测试
+## Checks and tests
 
 ```bash
 npm run check
@@ -158,82 +162,82 @@ cargo test --manifest-path src-tauri/Cargo.toml --locked
 cargo clippy --manifest-path src-tauri/Cargo.toml --locked -- -D warnings
 ```
 
-- **前端单元测试**：容量单位、百分比边界、趋势时间轴、运行时间格式化。
-- **Rust 单元测试**：macOS 系统卷去重、容量边界、趋势缓冲、多显示器与高 DPI 定位。
-- **界面测试**：主题与刷新设置持久化、窄窗口布局、原生外观命令、跟随系统与连接失败提示。
+- **Frontend unit tests:** capacity units, percentage bounds, chart timestamps, and uptime formatting.
+- **Rust unit tests:** macOS system volume deduplication, capacity bounds, history buffering, and positioning across displays and scale factors.
+- **UI tests:** saved theme and refresh settings, narrow layouts, native appearance commands, system theme changes, and connection errors.
 
-本地界面测试使用已安装的 Google Chrome；CI 使用 Playwright Chromium。临时截图和测试输出写入 `validation/`，不提交到仓库。README 使用的预览图单独存放在 `docs/images/`。
+Local UI tests use an installed Google Chrome browser. CI uses Playwright Chromium. Temporary screenshots and test output go to `validation/`, which is excluded from Git. README preview images are stored separately in `docs/images/`.
 
-每个平台发布前还应实测托盘点击、失焦隐藏、固定面板、退出、不同屏幕缩放、外接磁盘插拔及休眠唤醒。CI 编译通过不能代替原生交互验收。
+Before releasing on each platform, also check tray interactions, focus loss, pinning, quitting, display scaling, external drive changes, and sleep/wake behavior. A successful CI build does not replace native interaction testing.
 
-## 数据与隐私
+## Metrics and privacy
 
-- **采集方式**：Rust 后台线程复用 `sysinfo::System`，只刷新需要的 CPU、内存与磁盘指标，不扫描进程或文件内容。
-- **CPU**：使用前后两次采样计算使用率，首次采样需短暂等待；趋势最多保留 121 个点，按真实时间绘制，长时间采样间断或时钟回退后清空不连续历史。
-- **容量**：统一采用 KiB / MiB / GiB / TiB 二进制单位，与部分系统界面的十进制 GB 会有差异。
-- **内存**：采用操作系统与 `sysinfo` 的统计口径，不等同于 macOS「内存压力」。
-- **磁盘**：按挂载卷展示，macOS 优先读取 Data 卷并过滤重复系统挂载；不会把共享存储池的卷容量相加。APFS 可用空间与 Finder 的「可清除空间」口径可能不同。
-- **隐私**：系统指标只在本机处理，不上传主机名、卷名或资源用量，不接入遥测；字体、图标与图表不依赖远端服务。
+- **Collection:** a Rust background thread reuses `sysinfo::System` and refreshes only the CPU, memory, and disk information it needs. It does not scan processes or file contents.
+- **CPU:** usage is calculated from successive samples, so the first reading takes a short moment. History keeps at most 121 points and uses actual timestamps. Long sampling gaps or backward clock changes clear discontinuous history.
+- **Capacity:** values use binary KiB / MiB / GiB / TiB units, which differ from decimal GB shown by some system tools.
+- **Memory:** figures follow the OS and `sysinfo` accounting model. They are not equivalent to macOS Memory Pressure.
+- **Storage:** volumes are displayed individually. On macOS, the Data volume is preferred and duplicate system mounts are filtered out. Capacities of volumes sharing a storage pool are not added together. Available APFS space may differ from Finder's accounting of purgeable space.
+- **Privacy:** system metrics stay on your device. Hostnames, volume names, and resource usage are not uploaded. There is no telemetry, and fonts, icons, and charts do not depend on remote services.
 
-可对本地可执行文件传入 `--diagnostics`，等待一次 CPU 采样后输出单次 JSON 并退出，不启动窗口。诊断结果含主机名和卷名，在反馈问题时请先检查并移除不想公开的设备信息。
+Pass `--diagnostics` to the local executable to wait for a CPU sample, print a single JSON snapshot, and exit without opening a window. Diagnostic output contains your hostname and volume names; remove any device information you do not want to publish before attaching it to an issue.
 
-## 项目结构
+## Project structure
 
 ```text
 SystemPanel/
-├── src/                       # React 界面、主题、数据轮询与格式化
+├── src/                       # React UI, themes, polling, and formatting
 ├── src-tauri/
-│   ├── src/metrics.rs         # 系统采集与趋势缓冲
-│   ├── src/lib.rs             # IPC、托盘、原生主题与窗口生命周期
-│   ├── src/position.rs        # 多显示器弹出位置计算
-│   ├── capabilities/          # Tauri 窗口权限
-│   ├── icons/                 # 应用与托盘图标
-│   └── tauri.conf.json        # 桌面与打包配置
-├── tests/                     # Playwright 界面测试
-├── scripts/generate-icons.mjs # 可重复生成图标
-├── docs/images/               # 项目首页预览图
-├── .github/workflows/         # 检查与跨平台构建
-└── AGENTS.md                  # 产品边界与工程协作约定
+│   ├── src/metrics.rs         # System collection and history buffering
+│   ├── src/lib.rs             # IPC, tray, native themes, and window lifecycle
+│   ├── src/position.rs        # Panel positioning across displays
+│   ├── capabilities/          # Tauri window permissions
+│   ├── icons/                 # Application and tray icons
+│   └── tauri.conf.json        # Desktop and packaging configuration
+├── tests/                     # Playwright UI tests
+├── scripts/generate-icons.mjs # Reproducible icon generation
+├── docs/images/               # README preview images
+├── .github/workflows/         # Checks and platform builds
+└── AGENTS.md                  # Product scope and engineering guidelines
 ```
 
-## 常见问题
+## FAQ
 
 <details>
-<summary>启动后没有窗口？</summary>
+<summary>Why is there no window after launch?</summary>
 
-这是默认行为。请点击 macOS 菜单栏或 Windows 系统托盘中的脉冲图标。Windows 上可先查看托盘的折叠区域。
+This is intentional. Click the pulse icon in the macOS menu bar or Windows system tray. On Windows, check the tray overflow area if the icon is not immediately visible.
 
 </details>
 
 <details>
-<summary>为什么数据与系统自带监控工具不完全一样？</summary>
+<summary>Why do readings differ from the OS monitoring tools?</summary>
 
-不同工具的采样周期和统计口径可能不同。SystemPanel 默认每 2 秒采样，容量使用二进制单位；macOS 内存压力、磁盘可清除空间也不等同于本面板展示的使用量。
-
-</details>
-
-<details>
-<summary>为什么背景模糊不明显？</summary>
-
-桌面版的玻璃材质由操作系统渲染，效果受背景、系统版本及透明效果设置影响。在纯色背景下通常更含蓄；关闭系统透明效果时可能表现为实色。浏览器预览不等同于原生桌面材质。
+Sampling intervals and accounting methods can differ. SystemPanel samples every two seconds by default and uses binary capacity units. macOS Memory Pressure and purgeable disk space also measure different things from the usage figures shown here.
 
 </details>
 
 <details>
-<summary>macOS 编译提示尚未确认 Xcode 许可？</summary>
+<summary>Why is the glass effect subtle?</summary>
 
-请由本人完成 Xcode 的首次初始化与许可确认。如果已经安装可用的独立 Command Line Tools，也可以仅对当前命令指定工具链：
+The OS renders the desktop glass material. Its appearance depends on the background, OS version, and transparency settings. It is usually subtler over a solid background and may appear opaque when system transparency is disabled. The browser preview does not reproduce native desktop materials exactly.
+
+</details>
+
+<details>
+<summary>What if macOS reports that the Xcode license has not been accepted?</summary>
+
+Complete Xcode's first-run setup and review the license yourself. If a working standalone Command Line Tools installation is already available, you can select it for a single command:
 
 ```bash
 DEVELOPER_DIR=/Library/Developer/CommandLineTools npm run desktop
 ```
 
-这不会修改全局 `xcode-select` 设置。
+This does not change the global `xcode-select` setting.
 
 </details>
 
-## 反馈与贡献
+## Feedback and contributions
 
-欢迎通过 [Issues](https://github.com/EvilGenius-dot/SystemPanel/issues) 提交问题或建议。请附上操作系统版本、设备架构、复现步骤及预期行为；涉及布局时可提供已移除隐私信息的截图。
+Use [Issues](https://github.com/EvilGenius-dot/SystemPanel/issues) to report a bug or suggest an improvement. Include your OS version, device architecture, steps to reproduce, and expected behavior. For layout issues, a screenshot with private information removed is helpful.
 
-提交代码前请阅读 [AGENTS.md](AGENTS.md)，运行相关检查，并注明实际验证的平台。尤其欢迎补充 Windows 与 Intel Mac 的实机反馈。
+Before contributing code, read [AGENTS.md](AGENTS.md), run the relevant checks, and state which platforms you actually tested. Native testing feedback from Windows and Intel Mac devices is especially welcome.
