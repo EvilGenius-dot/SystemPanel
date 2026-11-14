@@ -1,0 +1,30 @@
+import sharp from 'sharp';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+const out = fileURLToPath(new URL('../src-tauri/icons/', import.meta.url));
+await mkdir(out, { recursive: true });
+const svg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><rect x="28" y="28" width="968" height="968" rx="222" fill="#0c0e14"/><rect x="47" y="47" width="930" height="930" rx="205" fill="none" stroke="#303541" stroke-width="8"/><path d="M226 578h124l79-203 139 324 90-237h140" stroke="#72d5ff" stroke-width="66" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`);
+const png = async size => sharp(svg).resize(size, size).png().toBuffer();
+await writeFile(`${out}/source.svg`, svg);
+await Promise.all([['32x32.png', 32], ['128x128.png', 128], ['128x128@2x.png', 256]].map(async ([name, size]) => writeFile(`${out}/${name}`, await png(size))));
+const tray = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"><path d="M5 24h7l5-12 9 22 6-16h7" stroke="black" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/></svg>');
+await sharp(tray).png().toFile(`${out}/tray.png`);
+const sizes = [32, 64, 128, 256];
+const pngs = await Promise.all(sizes.map(png));
+const header = Buffer.alloc(6 + 16 * sizes.length);
+header.writeUInt16LE(1, 2); header.writeUInt16LE(sizes.length, 4);
+let offset = header.length;
+pngs.forEach((image, i) => {
+  const entry = 6 + i * 16;
+  header[entry] = sizes[i] % 256; header[entry + 1] = sizes[i] % 256;
+  header.writeUInt16LE(1, entry + 4); header.writeUInt16LE(32, entry + 6);
+  header.writeUInt32LE(image.length, entry + 8); header.writeUInt32LE(offset, entry + 12);
+  offset += image.length;
+});
+await writeFile(`${out}/icon.ico`, Buffer.concat([header, ...pngs]));
+const chunks = await Promise.all([['icp4', 16], ['icp5', 32], ['icp6', 64], ['ic07', 128], ['ic08', 256], ['ic09', 512], ['ic10', 1024]].map(async ([type, size]) => {
+  const image = await png(size); const chunk = Buffer.alloc(8); chunk.write(type); chunk.writeUInt32BE(image.length + 8, 4); return Buffer.concat([chunk, image]);
+}));
+const icns = Buffer.alloc(8); icns.write('icns'); icns.writeUInt32BE(8 + chunks.reduce((sum, c) => sum + c.length, 0), 4);
+await writeFile(`${out}/icon.icns`, Buffer.concat([icns, ...chunks]));
+console.log('Generated application and template tray icons.');

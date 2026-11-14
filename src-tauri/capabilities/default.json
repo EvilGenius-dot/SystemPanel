@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-panel",
+  "description": "Only the local main panel can invoke the application commands. No filesystem or shell plugins.",
+  "windows": ["main"],
+  "permissions": []
+}
