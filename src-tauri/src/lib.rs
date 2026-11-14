@@ -1,5 +1,7 @@
 mod metrics;
 mod position;
+#[cfg(target_os = "windows")]
+mod window_shape;
 
 use metrics::{Collector, Snapshot};
 use position::Bounds;
@@ -250,6 +252,14 @@ pub fn run() {
         .setup(|app| {
             #[cfg(target_os = "macos")]
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+
+            // Tao's undecorated Windows shadow retains a native frame, which
+            // appears as a white rim around the transparent WebView.
+            #[cfg(target_os = "windows")]
+            if let Some(window) = app.get_webview_window("main") {
+                window.set_shadow(false)?;
+                window_shape::apply(&window.as_ref().window())?;
+            }
 
             let show = MenuItem::with_id(app, "show", "显示系统看板", true, None::<&str>)?;
             let quit = MenuItem::with_id(app, "quit", "退出 SystemPanel", true, None::<&str>)?;

@@ -29,7 +29,7 @@ No account, no telemetry, and no remote fonts. System metrics stay on your devic
 
 The app interface is currently in **Simplified Chinese**. Documentation is available in English and Chinese.
 
-> **v0.1.0 — initial release.** Local builds and native UI checks have been completed on Apple Silicon macOS. Build workflows are configured for Intel Mac and Windows, but native interaction still needs verification on those devices. Code signing and Apple notarization are not yet configured.
+> **v0.1.0 — initial release.** Local builds and native UI checks have been completed on Apple Silicon macOS. Windows 11 has passed a local GNU build, live metric checks, window edge/corner checks in both themes, theme switching, and Esc hide/reopen checks. Full Windows interaction acceptance and Intel Mac native checks remain pending. Code signing and Apple notarization are not yet configured.
 
 ## Preview
 
@@ -220,6 +220,10 @@ Sampling intervals and accounting methods can differ. SystemPanel samples every 
 <summary>Why is the glass effect subtle?</summary>
 
 The OS renders the desktop glass material. Its appearance depends on the background, OS version, and transparency settings. It is usually subtler over a solid background and may appear opaque when system transparency is disabled. The browser preview does not reproduce native desktop materials exactly.
+
+On Windows, the native window shadow is disabled because it adds a white frame to the undecorated window. The acrylic material remains enabled; macOS keeps its native shadow. Desktop panels also omit the outer CSS outline, rim highlight, and inset shadow to avoid an extra visible edge.
+
+On Windows 11, DWM rounds the complete native window, including acrylic, and suppresses the system outline. The web content fills the window without a second CSS corner mask, preventing backdrop color from showing outside the corners. Corner shape and scaling follow the OS. Windows 10 uses square corners because these DWM attributes are unavailable; native Windows 10 and cross-monitor DPI checks remain pending.
 
 </details>
 
