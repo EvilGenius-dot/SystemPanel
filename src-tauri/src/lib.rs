@@ -1,5 +1,11 @@
+// A release profile alone does not enable Tauri's embedded frontend assets.
+// Reject development-mode release binaries before they overwrite the standalone app.
+#[cfg(all(not(debug_assertions), dev))]
+compile_error!("Release builds must embed the frontend. Run `npm run desktop:build -- --no-bundle` from the project root instead of plain `cargo build --release`.");
+
 mod metrics;
 mod position;
+mod startup;
 #[cfg(target_os = "windows")]
 mod window_shape;
 
@@ -237,8 +243,10 @@ pub fn run() {
         .expect("Unable to start system sampler");
 
     let app = tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, _, _| {
-            report(show_panel(app))
+        .plugin(tauri_plugin_single_instance::init(|app, args, _| {
+            if startup::should_show_panel(&args, true) {
+                report(show_panel(app));
+            }
         }))
         .manage(state)
         .invoke_handler(tauri::generate_handler![
@@ -246,10 +254,22 @@ pub fn run() {
             set_refresh_interval,
             set_pinned,
             set_appearance,
+            startup::get_autostart,
+            startup::set_autostart,
             hide_panel,
             quit_app
         ])
         .setup(|app| {
+            // LaunchAgent is compatible with our macOS 11 minimum. Registering
+            // the plugin only creates its manager; enabling remains opt-in.
+            #[cfg(target_os = "macos")]
+            app.handle().plugin(
+                tauri_plugin_autostart::Builder::new()
+                    .app_name("SystemPanel")
+                    .arg(startup::AUTOSTART_ARG)
+                    .macos_launcher(tauri_plugin_autostart::MacosLauncher::LaunchAgent)
+                    .build(),
+            )?;
             #[cfg(target_os = "macos")]
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);
 
@@ -312,7 +332,7 @@ pub fn run() {
                     }
                 })
                 .build(app)?;
-            if std::env::args().any(|arg| arg == "--show") {
+            if startup::should_show_panel(&std::env::args().collect::<Vec<_>>(), false) {
                 report(show_panel(app.handle()));
             }
             Ok(())

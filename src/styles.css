@@ -111,6 +111,15 @@ footer { padding: 11px 22px; background: var(--footer); border-top: 1px solid va
 .settings-row { display: flex; align-items: center; width: 100%; gap: 8px; background: none; border: none; border-top: 1px solid var(--border); font-size: 11px; padding: 13px 0; text-align: left; }
 .settings-row span { margin-left: auto; color: var(--subtle); font-size: 10px; }
 .settings-row:hover { color: var(--accent); }
+.settings-row:disabled { cursor: default; color: var(--muted); }
+.startup-state { display: flex; align-items: center; gap: 7px; }
+.startup-switch { display: inline-block; width: 24px; height: 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--track); padding: 2px; }
+.startup-switch::after { content: ''; display: block; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: transform .15s; }
+.startup-switch.on { background: var(--accent-muted); border-color: var(--accent); }
+.startup-switch.on::after { background: var(--accent); transform: translateX(10px); }
+.startup-hint { margin: -4px 0 12px 23px; }
+.setting-error { margin: 0 0 12px; font-size: 10px; line-height: 1.7; color: var(--amber); }
+.setting-retry { padding: 0 0 0 6px; border: 0; background: none; font: inherit; text-decoration: underline; }
 .settings-row.quit { color: var(--muted); }
 .settings-row.quit:hover { color: var(--amber); }
 .version { display: flex; justify-content: space-between; padding-top: 11px; border-top: 1px solid var(--border); font-size: 10px; color: var(--subtle); }

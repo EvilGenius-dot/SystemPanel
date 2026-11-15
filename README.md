@@ -83,10 +83,14 @@ On macOS, open the `.dmg` and move the app to Applications. On Windows, run the 
 | Right-click the tray icon | Show the panel or quit the app |
 | Click the pin | Keep the panel open when it loses focus |
 | Press `Esc` or click the hide button | Hide the panel while sampling continues |
-| Open settings | Change the theme or refresh interval, or quit the app |
+| Open settings | Change the theme, refresh interval, or launch-at-login setting, or quit the app |
 | Launch the app again | Show the existing instance without creating another tray icon |
 
 There is no Dock icon on macOS and no taskbar window on Windows. Windows may place the tray icon in the overflow area. Pinning resets on each launch; `Esc` and the tray icon can still dismiss a pinned panel.
+
+**Launch at login:** enable **跟随系统启动** in the desktop settings. It is off by default, applies to the current user, and launches into the tray/menu bar with the panel hidden. Windows uses this app's `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` value and respects its Task Manager startup status; macOS uses the [Tauri autostart plugin](https://v2.tauri.app/plugin/autostart/) with `~/Library/LaunchAgents/SystemPanel.plist`. No administrator access is requested. The switch reads system state when settings open and after changes; errors offer a retry instead of saving an unconfirmed preference. Browser previews cannot change startup settings.
+
+Enable this from a standalone build in its permanent location (Applications on macOS). After moving or renaming the app, disable and re-enable the option to update its path. On macOS, system background-item controls can still block a registered LaunchAgent; check System Settings if the item is registered but does not run.
 
 ## Development
 
@@ -132,7 +136,12 @@ npm run desktop:build -- --bundles app,dmg
 
 # Windows: create an NSIS installer
 npm run desktop:build -- --bundles nsis
+
+# Build a standalone executable without an installer
+npm run desktop:build -- --no-bundle
 ```
+
+Use the Tauri build command above for standalone releases. Plain `cargo build --release` does not enable Tauri's embedded frontend and would still try to load `localhost:1420`; the project rejects that combination at compile time. The standalone build embeds `dist/` and does not need Vite or an Internet connection. GNU Windows builds add `--target x86_64-pc-windows-gnu`; keep `WebView2Loader.dll` beside the resulting EXE.
 
 Default output directory:
 
@@ -163,10 +172,12 @@ cargo clippy --manifest-path src-tauri/Cargo.toml --locked -- -D warnings
 ```
 
 - **Frontend unit tests:** capacity units, percentage bounds, chart timestamps, and uptime formatting.
-- **Rust unit tests:** macOS system volume deduplication, capacity bounds, history buffering, and positioning across displays and scale factors.
-- **UI tests:** saved theme and refresh settings, narrow layouts, native appearance commands, system theme changes, and connection errors.
+- **Rust unit tests:** macOS system volume deduplication, capacity bounds, history buffering, display positioning, hidden login launches, and Windows startup path/disabled-state handling.
+- **UI tests:** saved theme and refresh settings, narrow layouts, native appearance commands, system theme changes, connection errors, startup state read-back, pending changes, and error recovery.
 
 Local UI tests use an installed Google Chrome browser. CI uses Playwright Chromium. Temporary screenshots and test output go to `validation/`, which is excluded from Git. README preview images are stored separately in `docs/images/`.
+
+Launch-at-login validation: Windows 11 has been tested with the native settings switch, current-user startup registration/removal, state read-back after restarting the app, and a simulated `--autostart` launch that stays hidden. Startup was restored to off after testing. A full sign-out/reboot was not performed; macOS build and login behavior still require validation on a Mac. On both platforms, enable the option from the installed app, sign out and back in, confirm one tray/menu-bar icon with no panel, then disable it and repeat to confirm the app no longer starts.
 
 Before releasing on each platform, also check tray interactions, focus loss, pinning, quitting, display scaling, external drive changes, and sleep/wake behavior. A successful CI build does not replace native interaction testing.
 

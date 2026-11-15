@@ -46,6 +46,7 @@ test('theme selection reaches the native window and System follows OS appearance
         invoke: async (command: string, args?: { theme?: string }) => {
           if (command === 'set_appearance') appearanceRequests.push(args?.theme ?? '');
           if (command === 'get_panel_state') return { snapshot: null, pinned: false, interval: 2, error: null };
+          if (command === 'get_autostart') return false;
         },
       },
     });

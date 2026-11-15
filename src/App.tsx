@@ -4,6 +4,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { bytes, chartPoints, percent, uptime } from './format';
 import { desktop, useMonitor } from './useMonitor';
 import type { RefreshInterval, Theme } from './types';
+import AutostartSetting from './AutostartSetting';
 
 function Meter({ value, label, tone = '' }: { value: number; label: string; tone?: string }) {
   return <div className={`meter ${tone}`} role="meter" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(value)}>
@@ -146,6 +147,7 @@ export default function App() {
       </div>
       <p className="setting-hint">磁盘空间每 15 秒刷新。设置自动保存。</p>
       <button className="settings-row" onClick={() => void monitor.togglePin()}><Pin size={15} />保持面板展开<span>{pinned ? '已开启' : '已关闭'}</span></button>
+      <AutostartSetting />
       {desktop && <><button className="settings-row quit" onClick={() => void quit()}><Power size={15} />退出 SystemPanel</button>{quitError && <p role="alert">退出失败，请使用托盘菜单重试。</p>}</>}
       {!desktop && <p className="setting-hint preview-hint"><ArrowDownToLine size={13} />桌面版支持托盘常驻与真实系统数据</p>}
       <p className="version">SystemPanel <span>v0.1.0</span></p>
