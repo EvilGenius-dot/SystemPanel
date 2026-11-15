@@ -1,0 +1,7 @@
+# Keep text files on LF in both the repository and working tree on every OS.
+* text=auto eol=lf
+
+# Preserve binary image and icon assets without newline conversion.
+*.png binary
+*.ico binary
+*.icns binary
